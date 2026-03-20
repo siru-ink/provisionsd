@@ -3,12 +3,12 @@ name = "provisionsd"
 version = "0.1.0"
 edition = "2024"
 description = ""
-documentation = ""
+# documentation = ""
 readme = "README.md"
 repository = "https://git.siru.ink/siru/provisionsd"
-license = ""
+# license = ""
 keywords = ["self-hosting","rocket","grocery-tracker"]
-categories = ""
+# categories = ""
 publish = false
 
 [dependencies]
