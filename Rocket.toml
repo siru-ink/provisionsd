@@ -1,0 +1,11 @@
+[default]
+address = "127.0.0.1"
+port = 8000
+secret_key = "GVEs+fmHc57x6+IaJduaxEQyVGHVGVbQAlfqd6OJYcqJgpDGxkWGw51fJ0QoXJg1jKJpPLYK153/DvlJZ4Pfgw=="
+
+[debug]
+address = "127.0.0.1"
+port = 11000
+
+[default.databases.maindb]
+url = "maindb.sqlite"
