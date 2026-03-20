@@ -1,0 +1,14 @@
+[Unit]
+Description=Provisionsd Rocket Application
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/rocket/provisionsd
+ExecStart=/home/rocket/provisionsd/provisionsd
+User=rocket
+Group=rocket
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
