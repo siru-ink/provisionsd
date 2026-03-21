@@ -16,7 +16,7 @@ pub fn database_setup() -> AdHoc {
 	        'id' integer not null unique,
 	        'user' text not null,
 	        'passwd' text not null,
-	        primary key('id' autorincrement)
+	        primary key('id' autoincrement)
             );",
         )
         .await
@@ -77,7 +77,7 @@ pub fn database_setup() -> AdHoc {
             foreign key('mealid') references 'meal'('id') on delete cascade,
             foreign key('ingredientid') references 'ingredients'('id') on delete cascade,
             foreign key('unit') references 'units'('id') on delete cascade,
-            primary key('meal_id', 'ingredient_id')
+            primary key('mealid', 'ingredientid')
             );",
         )
         .await
