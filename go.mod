@@ -1,3 +1,3 @@
-module git.siru.ink/provisionsd
+module git.siru.ink/siru/provisionsd
 
 go 1.26.1
