@@ -1,2 +1,5 @@
 # Exclude .env files
 **/.env
+
+# Exclude sqlite database files
+**/*.db
