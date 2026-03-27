@@ -62,10 +62,7 @@ func main() {
 }
 
 func authLoginGet(w http.ResponseWriter, r *http.Request) {
-	templ, err := template.ParseFiles("templates/base.html", "templates/login.html")
-	if err != nil {
-		log.Println("authLoginGet template parsing failed: %w", err)
-	}
+	templ := template.Must(template.ParseFiles("templates/base.html", "templates/login.html"))
 	templ.Execute(w, "")
 }
 
