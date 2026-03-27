@@ -8,13 +8,14 @@ import (
 	"net/http"
 	"os"
 
+	"git.siru.ink/siru/provisionsd/internal/db"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
 )
 
 var (
-	store *sessions.CookieStore
+	store     *sessions.CookieStore
 	defaultDB *sql.DB
 )
 
@@ -35,12 +36,15 @@ func init() {
 	store = sessions.NewCookieStore(key)
 	store.Options = &sessions.Options{
 		Path:     "/",
-		Domain:   "localhost",
+		Domain:   "dev.siru.ink",
 		MaxAge:   86400 * 7, // 7 days
 		HttpOnly: true,
 		Secure:   false, // Set to false for local development without HTTPS
-		SameSite: http.SameSiteLaxMode,
+		SameSite: http.SameSiteStrictMode,
 	}
+
+	// Init default sqlite3 db
+	defaultDB = db.InitDb()
 }
 
 func main() {
@@ -48,27 +52,43 @@ func main() {
 
 	loginRouter := r.PathPrefix("/auth").Subrouter()
 	loginRouter.HandleFunc("/", authIndexRoute)
-	loginRouter.HandleFunc("/login/", loginRoute)
+	loginRouter.HandleFunc("/login/", authLoginPost).Methods("POST")
+	loginRouter.HandleFunc("/login/", authLoginGet).Methods("GET")
 	loginRouter.HandleFunc("/logout/", logoutRoute)
 
 	log.Println("Starting server on port 11000")
 	http.ListenAndServe(":11000", r)
 }
 
-func loginRoute(w http.ResponseWriter, r *http.Request) {
-	session, err := store.Get(r, "is-authenticated")
-	if err != nil {
-		log.Println("Store get failed with: %w", err)
-	}
-	session.Values["state"] = true
-	err = session.Save(r, w)
-	if err != nil {
-		log.Println("Session save failed with: %w", err)
-	}
-	fmt.Fprintf(w, "Currently on login page.")
-	// http.Redirect(w, r, "/auth/", http.StatusSeeOther)
-	db.
+func authLoginGet(w http.ResponseWriter, r *http.Request) {
 }
+
+func authLoginPost(w http.ResponseWriter, r *http.Request) {
+	uname := r.FormValue("uname")
+	passwd := r.FormValue("passwd")
+
+	var userid int
+	err := defaultDB.
+		QueryRow("SELECT id FROM users WHERE uname == ? AND passwd == ?", uname, passwd).
+		Scan(&userid)
+
+	if err != nil {
+		http.Redirect(w, r, "/auth/login/", http.StatusNotFound)
+		return
+	}
+
+	authCookie, err := store.Get(r, "authCookie")
+	if err != nil {
+		log.Println("Cookie retrieval <authCookie> failed: %w", err)
+	}
+	authCookie.Values["logged-in"] = true
+	err = authCookie.Save(r, w)
+	if err != nil {
+		log.Println("Cookie save <authCookie> failed: %w", err)
+	}
+	http.Redirect(w, r, "/auth/", http.StatusFound)
+}
+
 func logoutRoute(w http.ResponseWriter, r *http.Request) {}
 func authIndexRoute(w http.ResponseWriter, r *http.Request) {
 	session, err := store.Get(r, "is-authenticated")
