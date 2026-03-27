@@ -1,26 +1,49 @@
 package main
 
 import (
-	"crypto/rand"
+	"database/sql"
+	"encoding/hex"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
+	"github.com/joho/godotenv"
 )
 
 var (
-	key = func() []byte {
-		k := make([]byte, 64)
-		rand.Read(k)
-		return k
-	}()
-	store = sessions.NewCookieStore(key)
+	store *sessions.CookieStore
+	defaultDB *sql.DB
 )
 
-func main() {
-	initCookieStoreOptions()
+func init() {
+	// Load .env configuration variables
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file: %w", err)
+	}
 
+	// Get secret key from .env file
+	key, err := hex.DecodeString(os.Getenv("SECRET_KEY"))
+	if err != nil {
+		log.Fatal("Error retrieving secret key from .env file: %w", err)
+	}
+
+	// Set up cookie store
+	store = sessions.NewCookieStore(key)
+	store.Options = &sessions.Options{
+		Path:     "/",
+		Domain:   "localhost",
+		MaxAge:   86400 * 7, // 7 days
+		HttpOnly: true,
+		Secure:   false, // Set to false for local development without HTTPS
+		SameSite: http.SameSiteLaxMode,
+	}
+}
+
+func main() {
 	r := mux.NewRouter()
 
 	loginRouter := r.PathPrefix("/auth").Subrouter()
@@ -28,43 +51,36 @@ func main() {
 	loginRouter.HandleFunc("/login/", loginRoute)
 	loginRouter.HandleFunc("/logout/", logoutRoute)
 
-	fmt.Println("Starting server on port 11000")
+	log.Println("Starting server on port 11000")
 	http.ListenAndServe(":11000", r)
 }
 
 func loginRoute(w http.ResponseWriter, r *http.Request) {
-	session, err := store.Get(r, "siru-cookie-name")
+	session, err := store.Get(r, "is-authenticated")
 	if err != nil {
-		fmt.Println("Store get failed with: %w", err)
+		log.Println("Store get failed with: %w", err)
 	}
-	session.Values["authenticated"] = true
+	session.Values["state"] = true
 	err = session.Save(r, w)
 	if err != nil {
-		fmt.Println("Session save failed with: %w", err)
+		log.Println("Session save failed with: %w", err)
 	}
 	fmt.Fprintf(w, "Currently on login page.")
 	// http.Redirect(w, r, "/auth/", http.StatusSeeOther)
+	db.
 }
 func logoutRoute(w http.ResponseWriter, r *http.Request) {}
 func authIndexRoute(w http.ResponseWriter, r *http.Request) {
-	session, _ := store.Get(r, "siru-cookie-name")
+	session, err := store.Get(r, "is-authenticated")
+	if err != nil {
+		log.Println("Failed retrieving is-authenticated cookie: %w")
+	}
 
 	// Check if user is authenticated
-	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
+	if auth, isBool := session.Values["state"].(bool); isBool && auth {
 		fmt.Fprintf(w, "Authenticated aka logged-in.")
 		return
 	}
 
-	// Print secret message
 	fmt.Fprintln(w, "Not authenticated aka logged-out.")
-}
-
-func initCookieStoreOptions() {
-	store.Options = &sessions.Options{
-		Path:     "/",
-		MaxAge:   86400 * 7, // 7 days
-		HttpOnly: true,
-		Secure:   false, // Set to false for local development without HTTPS
-		SameSite: http.SameSiteLaxMode,
-	}
 }
