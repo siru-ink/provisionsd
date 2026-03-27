@@ -97,13 +97,13 @@ func authLoginPost(w http.ResponseWriter, r *http.Request) {
 
 func logoutRoute(w http.ResponseWriter, r *http.Request) {}
 func authIndexRoute(w http.ResponseWriter, r *http.Request) {
-	session, err := store.Get(r, "is-authenticated")
+	session, err := store.Get(r, "authCookie")
 	if err != nil {
 		log.Println("Failed retrieving is-authenticated cookie: %w")
 	}
 
 	// Check if user is authenticated
-	if auth, isBool := session.Values["state"].(bool); isBool && auth {
+	if auth, isBool := session.Values["logged-in"].(bool); isBool && auth {
 		fmt.Fprintf(w, "Authenticated aka logged-in.")
 		return
 	}
