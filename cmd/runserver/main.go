@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -61,6 +62,11 @@ func main() {
 }
 
 func authLoginGet(w http.ResponseWriter, r *http.Request) {
+	templ, err := template.ParseFiles("templates/base.html", "templates/login.html")
+	if err != nil {
+		log.Println("authLoginGet template parsing failed: %w", err)
+	}
+	templ.Execute(w, "")
 }
 
 func authLoginPost(w http.ResponseWriter, r *http.Request) {

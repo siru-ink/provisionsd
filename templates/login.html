@@ -1,0 +1,9 @@
+{{define "title"}}Login{{end}}
+{{define "content"}}
+<h1>Login</h1>
+<form method="POST" action="/auth/login/">
+    <input type="text" name="uname" placeholder="Username" />
+    <input type="password" name="passwd" placeholder="Password" />
+    <button type="submit">Login</button>
+</form>
+{{end}}
