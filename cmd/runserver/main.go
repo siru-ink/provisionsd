@@ -51,6 +51,10 @@ func init() {
 func main() {
 	r := mux.NewRouter()
 
+	// Add static file serving i.e. css
+	fs := http.FileServer(http.Dir("assets/"))
+	r.PathPrefix("/static").Handler(http.StripPrefix("/static", fs))
+
 	loginRouter := r.PathPrefix("/auth").Subrouter()
 	loginRouter.HandleFunc("/", authIndexRoute)
 	loginRouter.HandleFunc("/login/", authLoginPost).Methods("POST")
