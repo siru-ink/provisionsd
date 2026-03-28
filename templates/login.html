@@ -1,9 +1,21 @@
 {{define "title"}}Login{{end}}
 {{define "content"}}
-<h1>Login</h1>
+<h2>Login</h2>
 <form method="POST" action="/auth/login/">
-    <input type="text" name="uname" placeholder="Username" />
-    <input type="password" name="passwd" placeholder="Password" />
-    <button type="submit">Login</button>
+    <div>
+        <label for="uname">Username</label>
+        <input type="text" name="uname" id="uname" placeholder="siru | koto" required />
+    </div>
+    <div>
+        <label for="passwd">Password</label>
+        <input type="password" name="passwd" id="passwd" placeholder="Do you still remember?" required />
+    </div>
+    <!--<div>
+        <label for="content">Content:</label>
+        <textarea name="content" id="content" placeholder="Write out your heart..." required></textarea>
+    </div>-->
+    <div>
+        <button type="submit">Submit</button>
+    </div>
 </form>
 {{end}}
