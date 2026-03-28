@@ -1,0 +1,136 @@
+@font-face {
+    font-family: "Garamond";
+    src: url("/static/fonts/garamond400.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Garamond";
+    src: url("/static/fonts/garamond700.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Garamond";
+    src: url("/static/fonts/garamond400italic.woff2") format("woff2");
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "Garamond";
+    src: url("/static/fonts/garamond700italic.woff2") format("woff2");
+    font-weight: 700;
+    font-style: italic;
+}
+
+:root {
+    color-scheme: light dark;
+    --text: light-dark(#030303, #f9f6ee);
+    --text-background: light-dark(#f9f6ee, #030303);
+    --off-background: light-dark(#eee5ce, #1f1f1f);
+    --accent-color: light-dark(#004e73, #11b4ff);
+    --font-family: "Garamond", serif;
+    --font-size: 16px;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+}
+
+body {
+    color: var(--text);
+    background-color: var(--text-background);
+    padding: 5px;
+    margin: 0 auto;
+    max-width: 85ch;
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    line-height: 1.4;
+}
+
+button {
+    padding: 0.2em 0.6em;
+    color: var(--text);
+    background-color: var(--off-background);
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+
+    &:active {
+        border: 2px solid var(--accent-color);
+    }
+}
+
+h1 {
+    font-size: 36px;
+    font-weight: bold;
+}
+h2 {
+    font-size: 32px;
+    font-weight: bold;
+}
+h3 {
+    font-size: 28px;
+    font-weight: bold;
+}
+h4 {
+    font-size: 24px;
+    font-weight: bold;
+}
+h5 {
+    font-size: 20px;
+    font-weight: bold;
+}
+h6 {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+a,
+a:visited {
+    text-decoration: underline;
+    color: var(--accent-color);
+    cursor: pointer;
+}
+
+form {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 1em;
+    height: 200vh;
+
+    & > div {
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: flex-start;
+        align-items: stretch;
+        gap: 5px;
+
+        & > button[type="submit"] {
+            width: fit-content;
+        }
+
+        & > textarea {
+            min-height: 9lh;
+        }
+    }
+
+    & div:has(> textarea) {
+        flex-grow: 1;
+
+        & > textarea {
+            flex-grow: 1;
+        }
+    }
+}
