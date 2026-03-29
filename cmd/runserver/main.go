@@ -51,6 +51,9 @@ func init() {
 func main() {
 	r := mux.NewRouter()
 
+	r.NotFoundHandler = http.HandlerFunc(Http404NotFound)
+	r.MethodNotAllowedHandler = http.HandlerFunc(Http405MethodNotAllowed)
+
 	// Add static file serving i.e. css
 	fs := http.FileServer(http.Dir("assets/"))
 	r.PathPrefix("/static").Handler(http.StripPrefix("/static", fs))
@@ -59,10 +62,20 @@ func main() {
 	loginRouter.HandleFunc("/", authIndexRoute)
 	loginRouter.HandleFunc("/login/", authLoginPost).Methods("POST")
 	loginRouter.HandleFunc("/login/", authLoginGet).Methods("GET")
-	loginRouter.HandleFunc("/logout/", logoutRoute)
+	loginRouter.HandleFunc("/logout/", logoutRoute).Methods("POST")
 
 	log.Println("Starting server on port 11000")
 	http.ListenAndServe(":11000", r)
+}
+
+func Http404NotFound(w http.ResponseWriter, r *http.Request) {
+	templ := template.Must(template.ParseFiles("templates/base.html", "templates/httpcodes/404.html"))
+	templ.Execute(w, "")
+}
+
+func Http405MethodNotAllowed(w http.ResponseWriter, r *http.Request) {
+	templ := template.Must(template.ParseFiles("templates/base.html", "templates/httpcodes/405.html"))
+	templ.Execute(w, "")
 }
 
 func authLoginGet(w http.ResponseWriter, r *http.Request) {
