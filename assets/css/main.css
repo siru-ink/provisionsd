@@ -73,26 +73,32 @@ button {
 h1 {
     font-size: 36px;
     font-weight: bold;
+    margin: 36px 0 18px 0;
 }
 h2 {
     font-size: 32px;
     font-weight: bold;
+    margin: 32px 0 16px 0;
 }
 h3 {
     font-size: 28px;
     font-weight: bold;
+    margin: 28px 0 14px 0;
 }
 h4 {
     font-size: 24px;
     font-weight: bold;
+    margin: 24px 0 12px 0;
 }
 h5 {
     font-size: 20px;
     font-weight: bold;
+    margin: 20px 0 10px 0;
 }
 h6 {
     font-size: 16px;
     font-weight: bold;
+    margin: 16px 0 8px 0;
 }
 
 a,
