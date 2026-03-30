@@ -68,6 +68,8 @@ func main() {
 	http.ListenAndServe(":11000", r)
 }
 
+func Http403Forbidden(w http.ResponseWriter, r *http.Request) {}
+
 func Http404NotFound(w http.ResponseWriter, r *http.Request) {
 	templ := template.Must(template.ParseFiles("templates/base.html", "templates/httpcodes/404.html"))
 	templ.Execute(w, "")
@@ -76,6 +78,27 @@ func Http404NotFound(w http.ResponseWriter, r *http.Request) {
 func Http405MethodNotAllowed(w http.ResponseWriter, r *http.Request) {
 	templ := template.Must(template.ParseFiles("templates/base.html", "templates/httpcodes/405.html"))
 	templ.Execute(w, "")
+}
+
+func auth(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Get authentication cookie from cookie store
+		session, err := store.Get(r, "auth")
+
+		// Some kind of error in decoding an existing cookie
+		if err != nil {
+			log.Println("Failed decoding existing <auth> cookie: %w")
+		}
+
+		// If user is not authenticated (i.e. logged out) render 403 Forbidden
+		if auth, isBool := session.Values["status"].(bool); !isBool || !auth {
+			Http403Forbidden(w, r)
+			return
+		}
+
+		// User is authenticated, so continue loading route
+		next(w, r)
+	}
 }
 
 func authLoginGet(w http.ResponseWriter, r *http.Request) {
