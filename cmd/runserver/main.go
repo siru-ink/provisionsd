@@ -69,17 +69,20 @@ func main() {
 }
 
 func Http403Forbidden(w http.ResponseWriter, r *http.Request) {
-	templ := template.Must(template.ParseFiles("templates/base.html", "templates/httpcodes/403.html"))
+	templ := template.Must(template.ParseFiles("templates/base.html",
+		"templates/css/main.css.html", "templates/httpcodes/403.html"))
 	templ.Execute(w, "")
 }
 
 func Http404NotFound(w http.ResponseWriter, r *http.Request) {
-	templ := template.Must(template.ParseFiles("templates/base.html", "templates/httpcodes/404.html"))
+	templ := template.Must(template.ParseFiles("templates/base.html",
+		"templates/css/main.css.html", "templates/httpcodes/404.html"))
 	templ.Execute(w, "")
 }
 
 func Http405MethodNotAllowed(w http.ResponseWriter, r *http.Request) {
-	templ := template.Must(template.ParseFiles("templates/base.html", "templates/httpcodes/405.html"))
+	templ := template.Must(template.ParseFiles("templates/base.html",
+		"templates/css/main.css.html", "templates/httpcodes/405.html"))
 	templ.Execute(w, "")
 }
 
@@ -105,7 +108,8 @@ func auth(next http.HandlerFunc) http.HandlerFunc {
 }
 
 func authLoginGet(w http.ResponseWriter, r *http.Request) {
-	templ := template.Must(template.ParseFiles("templates/base.html", "templates/login.html"))
+	templ := template.Must(template.ParseFiles("templates/base.html",
+		"templates/css/main.css.html", "templates/login.html"))
 	templ.Execute(w, "")
 }
 

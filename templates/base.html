@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>{{block "title" .}}Title{{end}}</title>
-    <link rel="stylesheet" href="/static/css/main.css" />
+    <!--<link rel="stylesheet" href="/static/css/main.css" />-->
+    {{block "maincss" .}}{{end}}
 </head>
 <body>
     <h1><a href="/">Provisionsd</a></h1>
