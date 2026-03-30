@@ -68,7 +68,10 @@ func main() {
 	http.ListenAndServe(":11000", r)
 }
 
-func Http403Forbidden(w http.ResponseWriter, r *http.Request) {}
+func Http403Forbidden(w http.ResponseWriter, r *http.Request) {
+	templ := template.Must(template.ParseFiles("templates/base.html", "templates/httpcodes/403.html"))
+	templ.Execute(w, "")
+}
 
 func Http404NotFound(w http.ResponseWriter, r *http.Request) {
 	templ := template.Must(template.ParseFiles("templates/base.html", "templates/httpcodes/404.html"))
