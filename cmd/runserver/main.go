@@ -59,7 +59,7 @@ func main() {
 	r.PathPrefix("/static").Handler(http.StripPrefix("/static", fs))
 
 	loginRouter := r.PathPrefix("/auth").Subrouter()
-	loginRouter.HandleFunc("/", authIndexRoute)
+	loginRouter.HandleFunc("/", auth(authIndexRoute))
 	loginRouter.HandleFunc("/login/", authLoginPost).Methods("POST")
 	loginRouter.HandleFunc("/login/", authLoginGet).Methods("GET")
 	loginRouter.HandleFunc("/logout/", logoutRoute).Methods("POST")
@@ -140,17 +140,8 @@ func authLoginPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func logoutRoute(w http.ResponseWriter, r *http.Request) {}
+
+// Should always run after auth middleware
 func authIndexRoute(w http.ResponseWriter, r *http.Request) {
-	session, err := store.Get(r, "authCookie")
-	if err != nil {
-		log.Println("Failed retrieving is-authenticated cookie: %w")
-	}
-
-	// Check if user is authenticated
-	if auth, isBool := session.Values["logged-in"].(bool); isBool && auth {
-		fmt.Fprintf(w, "Authenticated aka logged-in.")
-		return
-	}
-
-	fmt.Fprintln(w, "Not authenticated aka logged-out.")
+	fmt.Fprintln(w, "Hello logged in user.")
 }
