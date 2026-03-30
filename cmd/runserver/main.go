@@ -123,15 +123,19 @@ func authLoginPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	authCookie, err := store.Get(r, "authCookie")
-	if err != nil {
-		log.Println("Cookie retrieval <authCookie> failed: %w", err)
-	}
-	authCookie.Values["logged-in"] = true
+	authCookie, _ := store.Get(r, "auth")
+	// Error decoding existing cookie can be ignored since we are storing a new cookie
+
+	// Save new auth:status:true cookie
+	authCookie.Values["status"] = true
 	err = authCookie.Save(r, w)
+
+	// Log errors in storing auth cookies for alter review
 	if err != nil {
-		log.Println("Cookie save <authCookie> failed: %w", err)
+		log.Println("Saving <auth> cookie failed: %w", err)
 	}
+
+	// Redirect to auth page to show logged in status
 	http.Redirect(w, r, "/auth/", http.StatusFound)
 }
 
