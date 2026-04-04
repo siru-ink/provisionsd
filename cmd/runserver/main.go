@@ -59,7 +59,7 @@ func main() {
 	r.PathPrefix("/static").Handler(http.StripPrefix("/static", fs))
 
 	loginRouter := r.PathPrefix("/auth").Subrouter()
-	loginRouter.HandleFunc("/", auth(authIndexRoute))
+	loginRouter.HandleFunc("/", auth(authIndexRoute, store))
 	loginRouter.HandleFunc("/login/", loginPost(defaultDB)).Methods("POST")
 	loginRouter.HandleFunc("/login/", loginGet).Methods("GET")
 	loginRouter.HandleFunc("/logout/", logoutRoute).Methods("POST")
@@ -86,10 +86,10 @@ func Http405MethodNotAllowed(w http.ResponseWriter, r *http.Request) {
 	templ.Execute(w, "")
 }
 
-func auth(next http.HandlerFunc) http.HandlerFunc {
+func auth(next http.HandlerFunc, cookies *sessions.CookieStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Get authentication cookie from cookie store
-		session, err := store.Get(r, "auth")
+		authCookie, err := cookies.Get(r, "auth")
 
 		// Some kind of error in decoding an existing cookie
 		if err != nil {
@@ -97,7 +97,7 @@ func auth(next http.HandlerFunc) http.HandlerFunc {
 		}
 
 		// If user is not authenticated (i.e. logged out) render 403 Forbidden
-		if auth, isBool := session.Values["status"].(bool); !isBool || !auth {
+		if auth, isBool := authCookie.Values["status"].(bool); !isBool || !auth {
 			Http403Forbidden(w, r)
 			return
 		}
