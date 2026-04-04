@@ -61,7 +61,7 @@ func main() {
 	loginRouter := r.PathPrefix("/auth").Subrouter()
 	loginRouter.HandleFunc("/", auth(authIndexRoute))
 	loginRouter.HandleFunc("/login/", authLoginPost).Methods("POST")
-	loginRouter.HandleFunc("/login/", authLoginGet).Methods("GET")
+	loginRouter.HandleFunc("/login/", loginGet).Methods("GET")
 	loginRouter.HandleFunc("/logout/", logoutRoute).Methods("POST")
 
 	log.Println("Starting server on port 11000")
@@ -107,7 +107,7 @@ func auth(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-func authLoginGet(w http.ResponseWriter, r *http.Request) {
+func loginGet(w http.ResponseWriter, r *http.Request) {
 	templ := template.Must(template.ParseFiles("templates/base.html",
 		"templates/css/main.css.html", "templates/login.html"))
 	templ.Execute(w, "")
