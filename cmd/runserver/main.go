@@ -62,7 +62,7 @@ func main() {
 	loginRouter.HandleFunc("/", auth(authIndexRoute, store))
 	loginRouter.HandleFunc("/login/", loginPost(defaultDB)).Methods("POST")
 	loginRouter.HandleFunc("/login/", loginGet).Methods("GET")
-	loginRouter.HandleFunc("/logout/", logoutRoute).Methods("POST")
+	loginRouter.HandleFunc("/logout/", logoutRoute(store)).Methods("POST")
 
 	log.Println("Starting server on port 11000")
 	http.ListenAndServe(":11000", r)
@@ -151,7 +151,25 @@ func loginPost(db *sql.DB) http.HandlerFunc {
 	}
 }
 
-func logoutRoute(w http.ResponseWriter, r *http.Request) {}
+// Returns a handler func that will reset auth cookie used for storing logged-in information
+func logoutRoute(cookies *sessions.CookieStore) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Retreive existing cookie or save a new one
+		authCookie, _ := cookies.Get(r, "auth")
+
+		// Set logged in status to false
+		authCookie.Values["status"] = false
+		err := authCookie.Save(r, w)
+
+		// Log errors in storing auth cookies for later review
+		if err != nil {
+			log.Printf("Saving <auth> cookie failed: %v", err)
+		}
+
+		// Redirect to auth index page to show logged-out status
+		http.Redirect(w, r, "/auth/", http.StatusFound)
+	}
+}
 
 // Should always run after auth middleware
 func authIndexRoute(w http.ResponseWriter, r *http.Request) {
