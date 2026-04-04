@@ -62,7 +62,7 @@ func main() {
 	loginRouter.HandleFunc("/", auth(authIndexRoute, store))
 	loginRouter.HandleFunc("/login/", loginPost(defaultDB)).Methods("POST")
 	loginRouter.HandleFunc("/login/", loginGet).Methods("GET")
-	loginRouter.HandleFunc("/logout/", logoutRoute(store)).Methods("POST")
+	loginRouter.HandleFunc("/logout/", logoutRoute(store))
 
 	log.Println("Starting server on port 11000")
 	http.ListenAndServe(":11000", r)
