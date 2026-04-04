@@ -65,7 +65,7 @@ func main() {
 	loginRouter.HandleFunc("/logout/", logoutRoute(cookies))
 
 	log.Println("Starting server on port 11000")
-	http.ListenAndServe(":11000", r)
+	log.Fatal(http.ListenAndServe(":11000", r))
 }
 
 func Http403Forbidden(w http.ResponseWriter, r *http.Request) {
