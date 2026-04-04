@@ -60,7 +60,7 @@ func main() {
 
 	loginRouter := r.PathPrefix("/auth").Subrouter()
 	loginRouter.HandleFunc("/", auth(authIndexRoute, cookies))
-	loginRouter.HandleFunc("/login/", loginPost(defaultDB)).Methods("POST")
+	loginRouter.HandleFunc("/login/", loginPost(defaultDB, cookies)).Methods("POST")
 	loginRouter.HandleFunc("/login/", loginGet).Methods("GET")
 	loginRouter.HandleFunc("/logout/", logoutRoute(cookies))
 
@@ -114,7 +114,7 @@ func loginGet(w http.ResponseWriter, r *http.Request) {
 }
 
 // Returns a HanlderFunc that processes login POST form information via the given database handle
-func loginPost(db *sql.DB) http.HandlerFunc {
+func loginPost(db *sql.DB, cookies *sessions.CookieStore) http.HandlerFunc {
 	// Actual http request handler with dependency on the `db` database reference
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Request login form data
