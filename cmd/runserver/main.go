@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	store     *sessions.CookieStore
+	cookies   *sessions.CookieStore
 	defaultDB *sql.DB
 )
 
@@ -34,8 +34,8 @@ func init() {
 	}
 
 	// Set up cookie store
-	store = sessions.NewCookieStore(key)
-	store.Options = &sessions.Options{
+	cookies = sessions.NewCookieStore(key)
+	cookies.Options = &sessions.Options{
 		Path:     "/",
 		Domain:   "dev.siru.ink",
 		MaxAge:   86400 * 7, // 7 days
@@ -59,10 +59,10 @@ func main() {
 	r.PathPrefix("/static").Handler(http.StripPrefix("/static", fs))
 
 	loginRouter := r.PathPrefix("/auth").Subrouter()
-	loginRouter.HandleFunc("/", auth(authIndexRoute, store))
+	loginRouter.HandleFunc("/", auth(authIndexRoute, cookies))
 	loginRouter.HandleFunc("/login/", loginPost(defaultDB)).Methods("POST")
 	loginRouter.HandleFunc("/login/", loginGet).Methods("GET")
-	loginRouter.HandleFunc("/logout/", logoutRoute(store))
+	loginRouter.HandleFunc("/logout/", logoutRoute(cookies))
 
 	log.Println("Starting server on port 11000")
 	http.ListenAndServe(":11000", r)
@@ -135,7 +135,7 @@ func loginPost(db *sql.DB) http.HandlerFunc {
 
 		// Store new authentication cookie. Error decoding existing cookie can be ignored since we
 		// are storing a new cookie
-		authCookie, _ := store.Get(r, "auth")
+		authCookie, _ := cookies.Get(r, "auth")
 
 		// Save new auth:status:true cookie
 		authCookie.Values["status"] = true
