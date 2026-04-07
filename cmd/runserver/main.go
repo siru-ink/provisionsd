@@ -128,7 +128,7 @@ func loginPost(db *sql.DB, cookies *sessions.CookieStore) http.HandlerFunc {
 
 		// No matching user could be found, redirecting back to login form
 		if err != nil {
-			http.Redirect(w, r, "/auth/login/", http.StatusNotFound)
+			http.Redirect(w, r, "/auth/login/", http.StatusSeeOther)
 			return
 		}
 
