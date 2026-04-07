@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"encoding/hex"
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -59,7 +58,7 @@ func main() {
 	r.PathPrefix("/static").Handler(http.StripPrefix("/static", fs))
 
 	loginRouter := r.PathPrefix("/auth").Subrouter()
-	loginRouter.HandleFunc("/", auth(authIndexRoute, cookies))
+	loginRouter.HandleFunc("/", authIndexRoute(cookies))
 	loginRouter.HandleFunc("/login/", loginPost(defaultDB, cookies)).Methods("POST")
 	loginRouter.HandleFunc("/login/", loginGet).Methods("GET")
 	loginRouter.HandleFunc("/logout/", logoutRoute(cookies))
@@ -171,7 +170,28 @@ func logoutRoute(cookies *sessions.CookieStore) http.HandlerFunc {
 	}
 }
 
-// Should always run after auth middleware
-func authIndexRoute(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Hello logged in user.")
+// Shows whether the current user is authenticated or not
+func authIndexRoute(cookies *sessions.CookieStore) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Check if user is authenticated based on cookie
+		authCookie, err := cookies.Get(r, "auth")
+
+		// Some kind of error in decoding an existing cookie
+		if err != nil {
+			log.Println("Failed decoding existing <auth> cookie: %w")
+		}
+
+		// If user is not authenticated (i.e. logged out)
+		var data string
+		if auth, isBool := authCookie.Values["status"].(bool); isBool || auth {
+			data = "authenticated"
+		} else {
+			data = "not authenticated"
+		}
+
+		// Render the template with relevant information
+		templ := template.Must(template.ParseFiles("templates/base.html",
+			"templates/css/main.css.html", "templates/auth.html"))
+		templ.Execute(w, data)
+	}
 }
