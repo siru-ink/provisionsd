@@ -58,10 +58,10 @@ func main() {
 	r.PathPrefix("/static").Handler(http.StripPrefix("/static", fs))
 
 	loginRouter := r.PathPrefix("/auth").Subrouter()
-	loginRouter.HandleFunc("/", authIndexRoute(cookies))
+	loginRouter.HandleFunc("/", authIndex(cookies))
 	loginRouter.HandleFunc("/login/", loginPost(defaultDB, cookies)).Methods("POST")
 	loginRouter.HandleFunc("/login/", loginGet).Methods("GET")
-	loginRouter.HandleFunc("/logout/", logoutRoute(cookies))
+	loginRouter.HandleFunc("/logout/", logout(cookies))
 
 	log.Println("Starting server on port 11000")
 	log.Fatal(http.ListenAndServe(":11000", r))
@@ -151,7 +151,7 @@ func loginPost(db *sql.DB, cookies *sessions.CookieStore) http.HandlerFunc {
 }
 
 // Returns a handler func that will reset auth cookie used for storing logged-in information
-func logoutRoute(cookies *sessions.CookieStore) http.HandlerFunc {
+func logout(cookies *sessions.CookieStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Retreive existing cookie or save a new one
 		authCookie, _ := cookies.Get(r, "auth")
@@ -171,7 +171,7 @@ func logoutRoute(cookies *sessions.CookieStore) http.HandlerFunc {
 }
 
 // Shows whether the current user is authenticated or not
-func authIndexRoute(cookies *sessions.CookieStore) http.HandlerFunc {
+func authIndex(cookies *sessions.CookieStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Check if user is authenticated based on cookie
 		authCookie, err := cookies.Get(r, "auth")
