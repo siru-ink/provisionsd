@@ -63,6 +63,9 @@ func main() {
 	loginRouter.HandleFunc("/login/", loginGet).Methods("GET")
 	loginRouter.HandleFunc("/logout/", logout(cookies))
 
+	formsRouter := r.PathPrefix("/form").Subrouter()
+	formsRouter.HandleFunc("/addingredient/", auth(addIngredientGet, cookies)).Methods("GET")
+
 	log.Println("Starting server on port 11000")
 	log.Fatal(http.ListenAndServe(":11000", r))
 }
@@ -194,4 +197,10 @@ func authIndex(cookies *sessions.CookieStore) http.HandlerFunc {
 			"templates/css/main.css.html", "templates/auth.html"))
 		templ.Execute(w, data)
 	}
+}
+
+func addIngredientGet(w http.ResponseWriter, r *http.Request) {
+	templ := template.Must(template.ParseFiles("templates/base.html",
+		"templates/css/main.css.html", "templates/form/addingredient.html"))
+	templ.Execute(w, "")
 }

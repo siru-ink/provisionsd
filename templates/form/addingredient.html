@@ -1,0 +1,13 @@
+{{define "title"}}Add Ingredient Form{{end}}
+{{define "content"}}
+<h2>Add Ingredient Form</h2>
+<form method="POST" action="/form/addingredient/">
+    <div>
+        <label for="name">Ingredient</label>
+        <input type="text" name="name" id="name" placeholder="New Ingredient" required />
+    </div>
+    <div>
+        <button type="submit">Submit</button>
+    </div>
+</form>
+{{end}}
