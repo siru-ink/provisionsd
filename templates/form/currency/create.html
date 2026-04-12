@@ -1,0 +1,21 @@
+{{define "title"}}Create Currency Form{{end}}
+{{define "content"}}
+<h2>Create Currency Form</h2>
+<form method="POST" action="{{.PostUrl}}" >
+    <div>
+        <label for="currency-longname">Currency Longname</label>
+        <input type="text" name="currency-longname" id="currency-longname" placeholder="dollar" required />
+    </div>
+    <div>
+        <label for="currency-shortname">Curreny Shortname</label>
+        <input type="text" name="currency-shortname" id="currency-shortname" placeholder="usd" required />
+    </div>
+    <div>
+        <label for="currency-symbol">Currency Symbol</label>
+        <input type="text" name="currency-symbol" id="currency-symbol" placehodler="$" />
+    </div>
+    <div>
+        <button type="submit">Create</button>
+    </div>
+</form>
+{{end}}

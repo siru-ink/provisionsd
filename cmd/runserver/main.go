@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"git.siru.ink/siru/provisionsd/internal/db"
+	"git.siru.ink/siru/provisionsd/internal/handlers"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
@@ -63,8 +64,11 @@ func main() {
 	loginRouter.HandleFunc("/login/", loginGet).Methods("GET")
 	loginRouter.HandleFunc("/logout/", logout(cookies))
 
-	formsRouter := r.PathPrefix("/form").Subrouter()
-	formsRouter.HandleFunc("/addingredient/", auth(addIngredientGet, cookies)).Methods("GET")
+	formRouter := r.PathPrefix("/form").Subrouter()
+	formRouter.HandleFunc("/addingredient/", auth(addIngredientGet, cookies)).Methods("GET")
+
+	currencyRouter := formRouter.PathPrefix("/currency").Subrouter()
+	currencyRouter.HandleFunc("/create/", handlers.ShowCreateCurrencyForm).Methods("GET")
 
 	log.Println("Starting server on port 11000")
 	log.Fatal(http.ListenAndServe(":11000", r))
