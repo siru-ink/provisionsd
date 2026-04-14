@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"html/template"
 	"net/http"
+
+	"git.siru.ink/siru/provisionsd/internal/templates"
 )
 
 func CreateCurrency(db *sql.DB) http.HandlerFunc {
@@ -12,7 +14,7 @@ func CreateCurrency(db *sql.DB) http.HandlerFunc {
 
 // Show a pre-populated html form for creating a new currency in the database
 func ShowCreateCurrencyForm(w http.ResponseWriter, r *http.Request) {
-	templ := template.Must(template.ParseFiles(
+	templ := template.Must(template.ParseFS(templates.FS,
 		"templates/base.html",
 		"templates/css/main.css.html",
 		"templates/form/currency/create.html",
