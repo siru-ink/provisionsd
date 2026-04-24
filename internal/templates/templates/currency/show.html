@@ -1,0 +1,8 @@
+{{define "title"}}Show Known Currencies{{end}}
+{{define "content"}}
+<h2>Known Currencies</h2>
+<ul>
+    {{range .Currencies}}
+    <li>{{.Longname}}: {{.Shortname}}: {{.Symbol}}</li>
+</ul>
+{{end}}
