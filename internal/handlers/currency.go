@@ -11,7 +11,7 @@ import (
 
 func ShowCurrency(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// retrieve existing currencies data from db
+		// Step 1: Execute the SQL query to retrieve currency data
 		sqlData, err := db.Query("SELECT longname,shortname,symbol FROM currencies ORDER BY id ASC;")
 		if err != nil {
 			log.Printf("querying db for currencies failed in `internal/handlers/currency.go`: %v\n", err)
@@ -19,14 +19,16 @@ func ShowCurrency(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
+		// Step 2: Define the structure to hold currency information
 		type CurrencyEntry struct {
-			Longname  string
-			Shortname string
-			Symbol    string
+			Longname  string // Full name of the currency (e.g., "United States Dollar")
+			Shortname string // Abbreviated form of the currency (e.g., "USD")
+			Symbol    string // Currency symbol (e.g., "$")
 		}
 
 		var currencies []CurrencyEntry
 
+		// Step 3: Populate the currencies slice with data from the database query
 		for sqlData.Next() {
 			var c CurrencyEntry
 			err := sqlData.Scan(&c.Longname, &c.Shortname, &c.Symbol)
@@ -38,21 +40,23 @@ func ShowCurrency(db *sql.DB) http.HandlerFunc {
 			currencies = append(currencies, c)
 		}
 
+		// Step 4: Define the structure to be passed to the template
 		type FormData struct {
-			currencies []CurrencyEntry
+			currencies []CurrencyEntry // Slice containing all currency information
 		}
 
-		formData := FormData{
+		formdata := FormData{
 			currencies: currencies,
 		}
 
+		// Step 5: Load and execute the template
 		templ := template.Must(template.ParseFS(templates.FS,
-			"templates/base.html",
-			"templates/css/main.css.html",
-			"templates/currency/show.html",
+			"templates/base.html",          // Base template file
+			"templates/css/main.css.html",  // CSS styles
+			"templates/currency/show.html", // Currency-specific template
 		))
 
-		templ.Execute(w, formData)
+		templ.Execute(w, formdata)
 	}
 }
 
