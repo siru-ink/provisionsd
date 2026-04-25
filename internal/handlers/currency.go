@@ -131,6 +131,10 @@ func DestroyCurrency(db *sql.DB) http.HandlerFunc {
 	}
 }
 
+// Shows form to destroy currency by ID. Queries database for currencies in ascending order by ID
+// and displays them in a form. Each currency is displayed with its long name. Prepares template
+// data with list of currencies and destruction endpoint URL. Renders destroy.html template with
+// the data.
 func ShowDestroyCurrencyForm(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Query database for currency list in ascending order by ID
