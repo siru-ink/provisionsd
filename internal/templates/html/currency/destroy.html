@@ -4,10 +4,10 @@
 <form method="POST" action="{{.PostUrl}}" >
     <div>
         <label for="currency-selector">Select the currency to delete:</label>
-        <select id="currency-selector" name="currency-selector" >
-            <option value="">-- Please select an option. --</option>
+        <select id="currency-selector" name="currency-selector" required >
+            <option value="" disabled selected >-- Please select an option. --</option>
             {{range .Currencies}}
-            <option value="{{.Id}}">{{.Longname}}</option>
+            <option value="{{.Id}}" >{{.Longname}}</option>
             {{end}}
         </select>
     </div>
