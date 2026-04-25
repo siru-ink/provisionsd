@@ -111,6 +111,7 @@ func DestroyCurrency(db *sql.DB) http.HandlerFunc {
 
 func ShowDestroyCurrencyForm(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// Query database for currency list in ascending order by ID
 		sqldata, err := db.Query("SELECT id, longname FROM currencies ORDER BY id ASC")
 		if err != nil {
 			log.Printf("error retrieving currencies from db in `internal/handlers/currency.go`: %v\n", err)
@@ -118,6 +119,7 @@ func ShowDestroyCurrencyForm(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
+		// Define structure to hold currency data
 		type CurrencyEntry struct {
 			Id       int
 			Longname string
@@ -125,17 +127,19 @@ func ShowDestroyCurrencyForm(db *sql.DB) http.HandlerFunc {
 
 		var currencies []CurrencyEntry
 
+		// Read query results and populate currency list
 		for sqldata.Next() {
 			var c CurrencyEntry
 			err := sqldata.Scan(&c.Id, &c.Longname)
 			if err != nil {
-				log.Printf("parsing of returned currencies db data failed in `internal/handlers/currency.go`: %v", err)
+				log.Printf("parsing of returned currencies db data failed: %v", err)
 				http.Error(w, "Error parsing database information.", http.StatusInternalServerError)
 				return
 			}
 			currencies = append(currencies, c)
 		}
 
+		// Define template data structure with currencies
 		type TemplateData struct {
 			Currencies []CurrencyEntry
 		}
@@ -144,12 +148,12 @@ func ShowDestroyCurrencyForm(db *sql.DB) http.HandlerFunc {
 			Currencies: currencies,
 		}
 
+		// Parse and execute template to render response
 		templ := template.Must(template.ParseFS(templates.FS,
 			"templates/base.html",
 			"templates/css/main.css.html",
 			"templates/currency/destroy.html",
 		))
-
 		templ.Execute(w, templdata)
 	}
 }
