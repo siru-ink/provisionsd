@@ -82,7 +82,7 @@ func CreateCurrency(db *sql.DB) http.HandlerFunc {
 		}
 
 		// Redirect on success
-		http.Redirect(w, r, "/currency/", http.StatusFound)
+		http.Redirect(w, r, "/apiv1/currency/show/", http.StatusFound)
 	}
 }
 
@@ -99,7 +99,7 @@ func ShowCreateCurrencyForm(w http.ResponseWriter, r *http.Request) {
 	}
 
 	formData := FormData{
-		PostUrl: "/apiv1/form/currency/create/",
+		PostUrl: "/apiv1/currency/create/",
 	}
 
 	templ.Execute(w, formData)
