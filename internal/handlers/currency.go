@@ -91,7 +91,7 @@ func ShowCreateCurrencyForm(w http.ResponseWriter, r *http.Request) {
 	templ := template.Must(template.ParseFS(templates.FS,
 		"templates/base.html",
 		"templates/css/main.css.html",
-		"templates/form/currency/create.html",
+		"templates/currency/create.html",
 	))
 
 	type FormData struct {
