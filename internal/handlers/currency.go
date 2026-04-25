@@ -75,7 +75,7 @@ func CreateCurrency(db *sql.DB) http.HandlerFunc {
 		symbol := r.FormValue("currency-symbol")
 
 		// Attempt to store data in database
-		_, err = db.Exec("INSERT INTO currencies(longname, shortname, symbol) VALUES ('?', '?', '?')", longname, shortname, symbol)
+		_, err = db.Exec("INSERT INTO currencies(longname, shortname, symbol) VALUES (?, ?, ?);", longname, shortname, symbol)
 		if err != nil {
 			log.Printf("Inserting currency into database failed: %v\n", err)
 			http.Error(w, "Failed storing data in database.", http.StatusInternalServerError)
