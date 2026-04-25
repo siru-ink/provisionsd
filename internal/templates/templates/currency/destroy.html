@@ -1,0 +1,18 @@
+{{define "title"}}Delete Currency{{end}}
+{{define "content"}}
+<h2>Delete a Currencies</h2>
+<form method="POST" action="{{.PostUrl}}" >
+    <div>
+        <label for="currency-selector">Select the currency to delete:</label>
+        <select id="currency-selector" name="currency-selector" >
+            <option value="">-- Please select an option. --</option>
+            {{range .Currencies}}
+            <option value="{{.Id}}">{{.Longname}}</option>
+            {{end}}
+        </select>
+    </div>
+    <div>
+        <button type="submit">Delete</button>
+    </div>
+</form>
+{{end}}
