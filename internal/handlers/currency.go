@@ -42,11 +42,11 @@ func ShowCurrency(db *sql.DB) http.HandlerFunc {
 
 		// Step 4: Define the structure to be passed to the template
 		type FormData struct {
-			currencies []CurrencyEntry // Slice containing all currency information
+			Currencies []CurrencyEntry // Slice containing all currency information
 		}
 
 		formdata := FormData{
-			currencies: currencies,
+			Currencies: currencies,
 		}
 
 		// Step 5: Load and execute the template
