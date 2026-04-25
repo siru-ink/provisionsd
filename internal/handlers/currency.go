@@ -142,10 +142,12 @@ func ShowDestroyCurrencyForm(db *sql.DB) http.HandlerFunc {
 		// Define template data structure with currencies
 		type TemplateData struct {
 			Currencies []CurrencyEntry
+			PostUrl    string
 		}
 
 		templdata := TemplateData{
 			Currencies: currencies,
+			PostUrl:    "/apiv1/currency/destroy/",
 		}
 
 		// Parse and execute template to render response
