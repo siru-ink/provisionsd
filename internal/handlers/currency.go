@@ -107,21 +107,26 @@ func ShowCreateCurrencyForm(w http.ResponseWriter, r *http.Request) {
 
 func DestroyCurrency(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// Parse form data from request
 		err := r.ParseForm()
 		if err != nil {
 			http.Error(w, "Bad form data.", http.StatusBadRequest)
 			return
 		}
 
+		// Get currency ID from form data
 		currencyId := r.FormValue("currency-selector")
 
+		// Execute delete query
 		_, err = db.Exec("DELETE FROM currencies WHERE id == ?", currencyId)
 		if err != nil {
+			// Log error if deletion fails
 			log.Printf("error deleting currency from db in `internal/handlers/currency.go`: %v", err)
 			http.Error(w, "Failed to delete currency from database.", http.StatusInternalServerError)
 			return
 		}
 
+		// Redirect to currency list overview page
 		http.Redirect(w, r, "/apiv1/currency/show/", http.StatusFound)
 	}
 }
