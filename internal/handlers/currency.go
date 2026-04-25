@@ -51,9 +51,9 @@ func ShowCurrency(db *sql.DB) http.HandlerFunc {
 
 		// Step 5: Load and execute the template
 		templ := template.Must(template.ParseFS(templates.FS,
-			"templates/base.html",          // Base template file
-			"templates/css/main.css.html",  // CSS styles
-			"templates/currency/show.html", // Currency-specific template
+			"html/base.html",          // Base template file
+			"html/css/main.css.html",  // CSS styles
+			"html/currency/show.html", // Currency-specific template
 		))
 
 		templ.Execute(w, formdata)
@@ -89,9 +89,9 @@ func CreateCurrency(db *sql.DB) http.HandlerFunc {
 // Show a pre-populated html form for creating a new currency in the database
 func ShowCreateCurrencyForm(w http.ResponseWriter, r *http.Request) {
 	templ := template.Must(template.ParseFS(templates.FS,
-		"templates/base.html",
-		"templates/css/main.css.html",
-		"templates/currency/create.html",
+		"html/base.html",
+		"html/css/main.css.html",
+		"html/currency/create.html",
 	))
 
 	type FormData struct {
@@ -152,9 +152,9 @@ func ShowDestroyCurrencyForm(db *sql.DB) http.HandlerFunc {
 
 		// Parse and execute template to render response
 		templ := template.Must(template.ParseFS(templates.FS,
-			"templates/base.html",
-			"templates/css/main.css.html",
-			"templates/currency/destroy.html",
+			"html/base.html",
+			"html/css/main.css.html",
+			"html/currency/destroy.html",
 		))
 		templ.Execute(w, templdata)
 	}
